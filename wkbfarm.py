@@ -65,7 +65,7 @@ class Ui_MainWindow(object):
         sire=self.sire_edit.text()
         dam=self.dam_edit.text()
         origin=self.origin_edit.text()
-        #print(type(ear_notch))
+    
             
 
         self.conn=pymysql.connect(host="localhost", user="root", password="noahkuan03", db="pigfarm")
@@ -112,63 +112,75 @@ class Ui_MainWindow(object):
                 self.loadData()
 
     def update(self):
+        """ Update information and save information to the database"""
         
-        sow_id1 = self.sow_no_edit.text()
-        # print(sow_id)
-        ear_tag1=self.ear_tag_number_edit.text()
-        ear_notch1=self.ear_notch_edit.text()
-        if len(ear_notch1) == 0:
-            self.messageBox("Information", " Ear Notch Cannot be empty!")
-            return        
-        try:
-            ear_notch1=int(self.ear_notch_edit.text())
-        except ValueError:
-            self.messageBox("Information", " integer only!")
-            return
-            
-        sex1=self.sex_edit.text()
-        breed1=self.breed_edit.text()
-        dob1=self.date_of_birth_edit.date()
-        var_date = dob1.toPyDate()
+        
+        sow_id=self.sow_no_edit.text()
+        ear_tag=self.ear_tag_number_edit.text()
+        
+        sex=self.sex_edit.text()
+        breed=self.breed_edit.text()
+        dob=self.date_of_birth_edit.date()
+        var_date = dob.toPyDate()
+        sire=self.sire_edit.text()
+        dam=self.dam_edit.text()
+        origin=self.origin_edit.text()
+        ear_notch=self.ear_notch_edit.text()
 
-        sire1=self.sire_edit.text()
-        dam1=self.dam_edit.text()
-        origin1=self.origin_edit.text()
+        if ear_notch == "":
+            self.messageBox("Information", "Ear Notch Cannot be empty")
+            return
+
+
+        try:
+            ear_notch=int(self.ear_notch_edit.text())
+        except ValueError:
+            self.messageBox("Information", "Ear Notch must be a number")
+            return
+        
         
         self.conn=pymysql.connect(host="localhost", user="root", password="noahkuan03", db="pigfarm")
         cur=self.conn.cursor()
 
-        sql = "UPDATE pig_record SET ear_tag_no = '"+ ear_tag1.upper() +"', ear_notch = '" + str(ear_notch1) + "', sex = '" + sex1.upper() + "', breed= '" + breed1.upper()\
-                + "', dob = '" + str(var_date) + "', sire = '" + sire1.upper()+ "', dam = '" + dam1.upper() + "', origin = '" + origin1.upper() + "'= '%s' WHERE sow_no = '"+sow_id1+"' "
+        sql = "UPDATE pig_record SET ear_tag_no = %s, ear_notch= %s, sex = %s, breed= %s\
+                 , dob = %s, sire = %s, dam = %s, origin = %s WHERE sow_no =%s "
+
+        val = ( ear_tag.upper(), str(ear_notch), sex.upper(), breed.upper(), var_date,\
+            sire.upper(),dam.upper(), origin.upper(), sow_id)
         
         if (sql):
-            #msg=QMessageBox()
-            if    len(ear_tag1) == 0:
+            msg=QMessageBox()
+            if    len(ear_tag) == 0:
                 self.messageBox("Information", " Ear Tag Cannot be empty!")
                 return
-            elif  len(sex1) == 0:
+            # elif  len(ear_notch) == 0:
+            #     self.messageBox("Information", " Ear Notch Cannot be empty!")
+            #     return
+            elif  len(sex)  == 0:
                 self.messageBox("Information", " Sex Cannot be empty!")
                 return
-            elif  len(breed1)  == 0:
+            elif  len(breed) == 0:
                 self.messageBox("Information", " Breed Cannot be empty!")
                 return
-            elif  len(sire1) == 0:
+            
+            elif  len(sire)== 0:
                 self.messageBox("Information", " Sire Cannot be empty!")
                 return
-            elif  len(dam1)== 0:
+            elif  len(dam)== 0:
                 self.messageBox("Information", " Dam Cannot be empty!")
                 return
-            elif  len(origin1)== 0:
+            elif  len(origin)== 0:
                 self.messageBox("Information", " Origin Cannot be empty!")
                 return
-                
+            
 
             else:
-                cur.execute(sql)
-                self.messageBox("WKB Piggery", " Sow Record Data Updated")
+                cur.execute(sql, val)
+                self.messageBox("WKB Piggery", " Sow Data Updated")
                 self.conn.commit()
                 self.loadData()
-                #self.cell_click_disabledTextbox()
+
+    
 
 
     def add_sow(self):
@@ -293,6 +305,7 @@ class Ui_MainWindow(object):
             sire = col[6]
             dam = col[7]
             origin = col[8]
+            #print(col)
            
         self.sow_no_edit.setText(i)
         self.ear_tag_number_edit.setText(ear_tag_number)
@@ -671,7 +684,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(10)
-        font.setBold(False)
+        #font.setBold(False)
         font.setWeight(50)
         item.setFont(font)
         self.tableWidget.setHorizontalHeaderItem(8, item)
