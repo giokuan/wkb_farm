@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>MainForm</class>
+ <widget class="QMainWindow" name="MainForm">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>1431</width>
-    <height>582</height>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,9 @@
       <width>1411</width>
       <height>211</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));</string>
     </property>
     <column>
      <property name="text">
@@ -94,14 +97,17 @@
      </property>
     </column>
    </widget>
-   <widget class="QFrame" name="frame">
+   <widget class="QFrame" name="breeding_frame">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>260</y>
       <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(241, 241, 241, 124), stop:0.909091 rgba(255, 255, 255, 0));</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -109,7 +115,7 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="breeding_label">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -128,7 +134,7 @@
       <string>Breeding</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="date_of_breed1_label">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -143,11 +149,17 @@
        <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
      <property name="text">
       <string>Date of Breed:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_2">
+    <widget class="QLineEdit" name="boar_no1_edit">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -156,8 +168,14 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="boar_no1_label">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -176,7 +194,7 @@
       <string>Boar No.</string>
      </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit">
+    <widget class="QDateEdit" name="date_of_breed1_dateEdit">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -185,8 +203,14 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit_2">
+    <widget class="QDateEdit" name="date_of_breed2_dateEdit">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -195,8 +219,14 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="boar_no2_label">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -215,7 +245,7 @@
       <string>Boar No.</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="date_of_breed2_label">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -234,7 +264,7 @@
       <string>Date of Breed:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_3">
+    <widget class="QLineEdit" name="boar_no2_edit">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -243,8 +273,14 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_6">
+    <widget class="QLabel" name="due_date_label">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -263,7 +299,7 @@
       <string>Due Date:</string>
      </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit_3">
+    <widget class="QDateEdit" name="due_date_dateEdit">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -272,8 +308,14 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_8">
+    <widget class="QLineEdit" name="parity_edit">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -282,8 +324,14 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_13">
+    <widget class="QLabel" name="parity_label">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -303,14 +351,17 @@
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_2">
+   <widget class="QFrame" name="farrowin_frame">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>370</x>
       <y>260</y>
-      <width>401</width>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(241, 241, 241, 124), stop:0.909091 rgba(255, 255, 255, 0));</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -318,10 +369,10 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_7">
+    <widget class="QLabel" name="farrowing_label">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>100</x>
        <y>10</y>
        <width>141</width>
        <height>21</height>
@@ -333,14 +384,17 @@
        <pointsize>15</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>Farrowing</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_8">
+    <widget class="QLabel" name="actual_farrowing_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>60</y>
        <width>191</width>
        <height>21</height>
@@ -352,24 +406,36 @@
        <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>Actual Farrowing:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_4">
+    <widget class="QLineEdit" name="boarn_alive_edit">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>220</x>
        <y>90</y>
        <width>113</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_9">
+    <widget class="QLabel" name="born_alive_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>90</y>
        <width>111</width>
        <height>21</height>
@@ -385,20 +451,26 @@
       <string>Born Alive:</string>
      </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit_4">
+    <widget class="QDateEdit" name="actual_farrowing_dateEdit">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>220</x>
        <y>60</y>
        <width>111</width>
        <height>22</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_10">
+    <widget class="QLabel" name="mummified_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>150</y>
        <width>111</width>
        <height>21</height>
@@ -414,12 +486,12 @@
       <string>Mummified:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_11">
+    <widget class="QLabel" name="still_birth_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>120</y>
-       <width>161</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -428,25 +500,34 @@
        <family>Gunship Condensed</family>
        <pointsize>12</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Still Birth:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_5">
+    <widget class="QLineEdit" name="still_birth_edit">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>220</x>
        <y>120</y>
        <width>113</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_12">
+    <widget class="QLabel" name="total_piglets_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>180</y>
        <width>161</width>
        <height>21</height>
@@ -458,39 +539,74 @@
        <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>Total Piglets:</string>
      </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_6">
+    <widget class="QLineEdit" name="mummified_edit">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>220</x>
        <y>150</y>
        <width>113</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_7">
+    <widget class="QLineEdit" name="total_piglets_edit">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>220</x>
        <y>180</y>
        <width>113</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
+    <zorder>total_piglets_label</zorder>
+    <zorder>farrowing_label</zorder>
+    <zorder>actual_farrowing_label</zorder>
+    <zorder>boarn_alive_edit</zorder>
+    <zorder>born_alive_label</zorder>
+    <zorder>actual_farrowing_dateEdit</zorder>
+    <zorder>mummified_label</zorder>
+    <zorder>still_birth_label</zorder>
+    <zorder>still_birth_edit</zorder>
+    <zorder>mummified_edit</zorder>
+    <zorder>total_piglets_edit</zorder>
    </widget>
-   <widget class="QFrame" name="frame_3">
+   <widget class="QFrame" name="weaning_frame">
     <property name="geometry">
      <rect>
-      <x>860</x>
+      <x>730</x>
       <y>260</y>
-      <width>401</width>
+      <width>361</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(241, 241, 241, 124), stop:0.909091 rgba(255, 255, 255, 0));</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -498,10 +614,10 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_14">
+    <widget class="QLabel" name="weaning_label">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>130</x>
        <y>10</y>
        <width>141</width>
        <height>21</height>
@@ -517,10 +633,10 @@
       <string>Weaning</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_15">
+    <widget class="QLabel" name="date_weaning_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>60</y>
        <width>191</width>
        <height>21</height>
@@ -536,20 +652,26 @@
       <string>Date Weaning:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_9">
+    <widget class="QLineEdit" name="total_wean_piglets_edit">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>230</x>
        <y>90</y>
        <width>113</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_16">
+    <widget class="QLabel" name="total_wean_piglets_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>90</y>
        <width>231</width>
        <height>21</height>
@@ -565,20 +687,26 @@
       <string>Total Wean Piglets:</string>
      </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit_5">
+    <widget class="QDateEdit" name="date_weaning_dateEdit">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>230</x>
        <y>60</y>
        <width>111</width>
        <height>22</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_18">
+    <widget class="QLabel" name="average_weight_label">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>120</y>
        <width>161</width>
        <height>21</height>
@@ -594,17 +722,178 @@
       <string>Average Weight:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_10">
+    <widget class="QLineEdit" name="average_weight_edit">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>230</x>
        <y>120</y>
        <width>113</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Gunship Condensed</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="add_record_button">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>520</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gunship Condensed</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>ADD RECORD</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="save_button">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>520</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gunship Condensed</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>SAVE</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="exit_button">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>520</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gunship Condensed</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>EXIT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cancel_button">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>520</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gunship Condensed</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>CANCEL</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="edit_button">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>520</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gunship Condensed</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>EDIT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clear_button">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>520</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gunship Condensed</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>CLEAR</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1431</width>
+      <height>611</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>logo/background.jpg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="id_edit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>559</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <zorder>label</zorder>
+   <zorder>tableWidget</zorder>
+   <zorder>breeding_frame</zorder>
+   <zorder>farrowin_frame</zorder>
+   <zorder>weaning_frame</zorder>
+   <zorder>add_record_button</zorder>
+   <zorder>save_button</zorder>
+   <zorder>exit_button</zorder>
+   <zorder>cancel_button</zorder>
+   <zorder>edit_button</zorder>
+   <zorder>clear_button</zorder>
+   <zorder>id_edit</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

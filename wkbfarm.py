@@ -117,7 +117,6 @@ class Ui_MainWindow(object):
         
         sow_id=self.sow_no_edit.text()
         ear_tag=self.ear_tag_number_edit.text()
-        
         sex=self.sex_edit.text()
         breed=self.breed_edit.text()
         dob=self.date_of_birth_edit.date()
@@ -130,7 +129,6 @@ class Ui_MainWindow(object):
         if ear_notch == "":
             self.messageBox("Information", "Ear Notch Cannot be empty")
             return
-
 
         try:
             ear_notch=int(self.ear_notch_edit.text())
@@ -153,9 +151,6 @@ class Ui_MainWindow(object):
             if    len(ear_tag) == 0:
                 self.messageBox("Information", " Ear Tag Cannot be empty!")
                 return
-            # elif  len(ear_notch) == 0:
-            #     self.messageBox("Information", " Ear Notch Cannot be empty!")
-            #     return
             elif  len(sex)  == 0:
                 self.messageBox("Information", " Sex Cannot be empty!")
                 return
@@ -180,8 +175,6 @@ class Ui_MainWindow(object):
                 self.conn.commit()
                 self.loadData()
 
-    
-
 
     def add_sow(self):
         # self.update_button.show()
@@ -196,6 +189,20 @@ class Ui_MainWindow(object):
         self.origin_edit.setEnabled(True)
         self.cancel_button.setEnabled(True)
         self.save_button.setEnabled(True)
+        self.edit_button.setEnabled(False)
+
+        self.sow_no_edit.clear()
+        self.ear_tag_number_edit.clear()
+        self.ear_notch_edit.clear()
+        self.sex_edit.clear()
+        self.breed_edit.clear()
+        self.date_of_birth_edit.clear()
+        self.sire_edit.clear()
+        self.dam_edit.clear()
+        self.origin_edit.clear()
+
+        self.cancel_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.save_button.setStyleSheet("background-color: rgb(121,126, 129);")
 
 
     def edit(self):
@@ -212,6 +219,7 @@ class Ui_MainWindow(object):
         self.cancel_button.setEnabled(True)
         self.save_button.setEnabled(False)
 
+        self.cancel_button.setStyleSheet("background-color: rgb(121,126, 129);")
 
 
     def cancel(self):
@@ -227,15 +235,19 @@ class Ui_MainWindow(object):
         self.origin_edit.setEnabled(False)
         self.cancel_button.setEnabled(False)
         self.save_button.setEnabled(False)
-
         self.refresh()
-
-        
         self.edit_button.show()
         self.edit_button.setEnabled(False)
         self.update_button.hide()
 
+        self.edit_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+
+        self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         
+        self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
 
     def refresh(self):
         self.sow_no_edit.clear()
@@ -249,11 +261,15 @@ class Ui_MainWindow(object):
         self.origin_edit.clear()
         self.edit_button.setEnabled(False)
         self.save_button.setEnabled(False)
-
+        self.cancel_button.setEnabled(False)
         self.loadData()
 
-
-
+        self.edit_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
 
 
     def loadData(self):
@@ -281,6 +297,29 @@ class Ui_MainWindow(object):
                   
         except mc.Error as e:
             print ("Error Occured")
+
+
+    def cell_click_disabledTextbox(self):
+        """ return to view mode"""
+        #self.add_btn.setEnabled(True)
+        self.save_button.setEnabled(False)
+        self.cancel_button.setEnabled(False)
+        self.refresh_button.setEnabled(True)
+        self.edit_button.setEnabled(True)
+        self.edit_button.show()
+        self.update_button.hide()
+        #self.save_btn.show()
+
+        self.ear_tag_number_edit.setEnabled(False)
+        self.ear_notch_edit.setEnabled(False)
+        self.sex_edit.setEnabled(False)
+        self.breed_edit.setEnabled(False)
+        self.date_of_birth_edit.setEnabled(False)
+        self.sire_edit.setEnabled(False)
+        self.dam_edit.setEnabled(False)
+        self.origin_edit.setEnabled(False)
+
+
 
     def cell_click(self,columnCount,rowCount):
         """ Give you the specific information of particular Sow when you clicked the
@@ -316,16 +355,21 @@ class Ui_MainWindow(object):
         self.sire_edit.setText(sire)
         self.dam_edit.setText(dam)
         self.origin_edit.setText(origin)
+        self.cell_click_disabledTextbox()
 
         if self.sow_no_edit.text() != 0:
             self.edit_button.setEnabled(True)
         else:
             return
+        self.edit_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
 
-        #self.cancel()
 
-        
-        
+       
+   
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -539,7 +583,8 @@ class Ui_MainWindow(object):
         font.setFamily("Gunship Condensed")
         font.setPointSize(10)
         self.save_button.setFont(font)
-        self.save_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.save_button.setObjectName("save_button")
         self.save_button.clicked.connect(self.insert_data)
         self.save_button.setEnabled(False)
@@ -561,7 +606,8 @@ class Ui_MainWindow(object):
         font.setFamily("Gunship Condensed")
         font.setPointSize(10)
         self.edit_button.setFont(font)
-        self.edit_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.edit_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.edit_button.setObjectName("edit_button")
         self.edit_button.clicked.connect(self.edit)
         self.edit_button.setEnabled(False)
@@ -572,7 +618,8 @@ class Ui_MainWindow(object):
         font.setFamily("Gunship Condensed")
         font.setPointSize(10)
         self.cancel_button.setFont(font)
-        self.cancel_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.cancel_button.setObjectName("cancel_button")
         self.cancel_button.clicked.connect(self.cancel)
         self.cancel_button.setEnabled(False)
