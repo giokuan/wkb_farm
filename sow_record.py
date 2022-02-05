@@ -7,12 +7,117 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QFil
 import sys
 
 
+
+
+
+
 class Ui_MainForm(object):
+
+    def messageBox(self,title,message):
+        mess=QtWidgets.QMessageBox()
+        mess.setStyleSheet('QMessageBox {background-color: rgb(121,126, 129) }\
+            QPushButton{color: white; font-size: 16px; background-color: rgb(75,75,75);\
+            border-radius: 5px; padding: 10px; text-align: center;} QPushButton:hover{color: rgb(0, 170, 127);}')
+        mess.setWindowIcon(QtGui.QIcon('logo/ico_logo.ico'))
+        mess.setWindowTitle(title)
+        mess.setText(message)
+        mess.setIcon(QMessageBox.Information)
+        mess.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        mess.exec_() 
+
+    def search(self): 
+        """ return a person name or a chapter"""   
+        row = 0
+        try: 
+            mydb = mc.connect(
+                host = "localhost",
+                user = "root",
+                password= "noahkuan03",
+                database = "pigfarm"
+            )
+            mycursor = mydb.cursor()
+            sow_id = self.id_edit.text()
+            
+            mycursor.execute("SELECT * FROM sow_performance WHERE sow_no = '"+sow_id+"' ");
+            result = mycursor.fetchall()
+          
+            self.tableWidget.setRowCount(0)
+            for row_number, row_data in enumerate(result):
+                self.tableWidget.insertRow(row_number)
+
+                for column_number, data in enumerate(row_data):
+                    self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+                  
+        except mc.Error as e:
+            print ("Error Occured")
+
+    def insert_data(self):
+        """ Save the Sow information in the database"""
+
+        parity_no = self.parity_edit.text()
+        
+        var_dob1 = self.date_of_breed1_dateEdit.date()
+        dob1= var_dob1.toPyDate()
+        
+        boar1 = self.boar_no1_edit.text()
+        
+        var_dob2 = self.date_of_breed2_dateEdit.date()
+        dob2= var_dob2.toPyDate()
+        
+        boar2 = self.boar_no2_edit.text()
+        var_due_date = self.due_date_dateEdit.date()
+        due_date=var_due_date.toPyDate()
+
+        var_actual_farrow = self.actual_farrowing_dateEdit.date()
+        actual_farrow = var_actual_farrow.toPyDate()
+
+        born_alive = self.boarn_alive_edit.text()
+        still_birth = self.still_birth_edit.text()
+        mummified = self.mummified_edit.text()
+        total_piglets = self.total_piglets_edit.text()
+        
+        var_date_wean = self.date_weaning_dateEdit.date()
+        date_wean = var_date_wean.toPyDate()
+        
+        total_wean_piglets = self.total_wean_piglets_edit.text()
+        sow_id = self.id_edit.text()
+    
+            
+
+        self.conn=pymysql.connect(host="localhost", user="root", password="noahkuan03", db="pigfarm")
+       
+        query=("INSERT INTO sow_performance (parity_no, dob1, boar_no1, dob2, boar_no2, \
+            due_date, actual_farrowing, born_alive, still_birth, mummified, total_piglets,\
+            date_wean, total_wean, sow_no) VALUES  (%s,%s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)")
+        cur=self.conn.cursor()
+        data= cur.execute(query, (parity_no, str(dob1), boar1.upper(), str(dob2), boar2.upper(),\
+                str(due_date), str(actual_farrow), born_alive, still_birth, mummified,\
+                total_piglets, str(date_wean), total_wean_piglets, sow_id ))
+        print(data)
+
+        if (data):
+            # msg=QMessageBox()
+            if    parity_no == "":
+                self.messageBox("Information", " Parity Field Cannot be empty!")
+                return
+            elif  len(boar1) == 0:
+                self.messageBox("Information", " Please Enter a Boar id Cannot be empty!")
+                return
+           
+           
+
+            else:
+                self.messageBox("WKB Piggery", " Sow Record Saved")
+                self.conn.commit()
+                #self.Savebutton.setEnabled(False)
+                #self.addbuttom.setEnabled(True)
+                # self.cancel()
+                self.loadData()
 
     def loadData(self):
         """ load data in the table"""
         
-        row = 0
+        #row = 0
         try: 
             mydb = mc.connect(
                 host = "localhost",
@@ -31,6 +136,7 @@ class Ui_MainForm(object):
 
                 for column_number, data in enumerate(row_data):
                     self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+
                   
         except mc.Error as e:
             print ("Error Occured")
@@ -78,6 +184,7 @@ class Ui_MainForm(object):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(13, item)
         self.loadData()
+        #self.search()
         self.tableWidget.verticalHeader().setVisible(False)
 
 
@@ -294,6 +401,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.date_of_breed1_dateEdit.setFont(font)
         self.date_of_breed1_dateEdit.setObjectName("date_of_breed1_dateEdit")
+
         
         self.boar_no1_edit = QtWidgets.QLineEdit(self.breeding_frame)
         self.boar_no1_edit.setGeometry(QtCore.QRect(200, 110, 113, 21))
@@ -401,7 +509,8 @@ class Ui_MainForm(object):
         font.setPointSize(10)
         self.add_record_button.setFont(font)
         self.add_record_button.setObjectName("add_record_button")
-        
+    
+
         self.save_button = QtWidgets.QPushButton(self.centralwidget)
         self.save_button.setGeometry(QtCore.QRect(190, 520, 171, 31))
         font = QtGui.QFont()
@@ -409,6 +518,7 @@ class Ui_MainForm(object):
         font.setPointSize(10)
         self.save_button.setFont(font)
         self.save_button.setObjectName("save_button")
+        self.save_button.clicked.connect(self.insert_data)
         
         self.exit_button = QtWidgets.QPushButton(self.centralwidget)
         self.exit_button.setGeometry(QtCore.QRect(920, 520, 171, 31))

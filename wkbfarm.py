@@ -5,9 +5,27 @@ from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QVBoxLayout, QH
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QFileDialog
 import sys
+from sow_record import *
 
 
 class Ui_MainWindow(object):
+
+    def next(self):
+        
+        x = self.sow_no_edit.text()
+        self.ui.id_edit.setText(x)
+        self.ui.search()          ### call this function from sow_record.py
+
+    def open_window(self):
+        """ Open the cert form window"""
+        self.window =QtWidgets.QMainWindow()
+        self.ui = Ui_MainForm()
+        self.ui.setupUi(self.window)
+        #MainWindow.close()
+
+        self.next()
+        self.window.show()
+
 
     def messageBox(self,title,message):
         mess=QtWidgets.QMessageBox()
@@ -262,9 +280,12 @@ class Ui_MainWindow(object):
         self.edit_button.setEnabled(False)
         self.save_button.setEnabled(False)
         self.cancel_button.setEnabled(False)
+        self.view_records_button.setEnabled(False)
         self.loadData()
 
         self.edit_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.view_records_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
@@ -359,9 +380,11 @@ class Ui_MainWindow(object):
 
         if self.sow_no_edit.text() != 0:
             self.edit_button.setEnabled(True)
+            self.view_records_button.setEnabled(True)
         else:
             return
         self.edit_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.view_records_button.setStyleSheet("background-color: rgb(121,126, 129);")
         self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
@@ -641,8 +664,12 @@ class Ui_MainWindow(object):
         font.setFamily("Gunship Condensed")
         font.setPointSize(10)
         self.view_records_button.setFont(font)
-        self.view_records_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.view_records_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.cancel_button.setObjectName("cancel_button")
         self.view_records_button.setObjectName("view_records_button")
+        self.view_records_button.clicked.connect(self.open_window)
+        self.view_records_button.setEnabled(False)
 
         self.exit_button = QtWidgets.QPushButton(self.centralwidget)
         self.exit_button.setGeometry(QtCore.QRect(390, 710, 171, 41))
