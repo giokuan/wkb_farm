@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QVBoxLayout, QH
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QFileDialog
 import sys
+import datetime
 
 
 
@@ -55,6 +56,14 @@ class Ui_MainForm(object):
         """ Save the Sow information in the database"""
 
         parity_no = self.parity_edit.text()
+        if parity_no == "":
+            self.messageBox("Information", " Enter Parity Number!")
+            return        
+        try:
+            parity_no=int(self.parity_edit.text())
+        except ValueError:
+            self.messageBox("Information", " Parity number invalid!")
+            return
         
         var_dob1 = self.date_of_breed1_dateEdit.date()
         dob1= var_dob1.toPyDate()
@@ -71,7 +80,9 @@ class Ui_MainForm(object):
         var_actual_farrow = self.actual_farrowing_dateEdit.date()
         actual_farrow = var_actual_farrow.toPyDate()
 
+
         born_alive = self.boarn_alive_edit.text()
+        
         still_birth = self.still_birth_edit.text()
         mummified = self.mummified_edit.text()
         total_piglets = self.total_piglets_edit.text()
@@ -90,7 +101,7 @@ class Ui_MainForm(object):
             due_date, actual_farrowing, born_alive, still_birth, mummified, total_piglets,\
             date_wean, total_wean, sow_no) VALUES  (%s,%s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)")
         cur=self.conn.cursor()
-        data= cur.execute(query, (parity_no, str(dob1), boar1.upper(), str(dob2), boar2.upper(),\
+        data= cur.execute(query, (int(parity_no), str(dob1), boar1.upper(), str(dob2), boar2.upper(),\
                 str(due_date), str(actual_farrow), born_alive, still_birth, mummified,\
                 total_piglets, str(date_wean), total_wean_piglets, sow_id ))
         print(data)
@@ -141,6 +152,64 @@ class Ui_MainForm(object):
         except mc.Error as e:
             print ("Error Occured")
 
+
+    def cell_click(self,columnCount,rowCount):
+        """ Give you the specific information of particular Sow when you clicked the
+        the Sow ID field """
+
+        self.conn=pymysql.connect(host="localhost", user="root", password="noahkuan03", db="pigfarm")
+        cur=self.conn.cursor()
+      
+        item = self.tableWidget.selectedItems()
+        i = (item[0].text())
+        if rowCount != (0):
+            return
+
+        else:
+            cur.execute ("SELECT * from sow_performance WHERE index_id =" +str(i))
+            col = cur.fetchone()
+            #print(col)
+
+            parity_no = col[1]
+            dob1 = col[2]
+            boar1 = col[3]
+            dob2 = col [4]
+            boar2 = col[5]
+            due_date = col[6]
+            actual_farrow = col[7]
+            born_alive = col[8]
+            still_birth1 =col [9]
+            mummified = col[10]
+            total_piglets = col[11]
+            date_wean = col[12]
+            total_wean_piglets = col[13]
+            id_edit = col[14]
+           
+        self.index_edit.setText(i)   
+        self.parity_edit.setText(str(parity_no))
+        self.date_of_breed1_dateEdit.setDate(dob1)
+        self.boar_no1_edit.setText(boar1)
+        self.date_of_breed2_dateEdit.setDate(dob2)
+        self.boar_no2_edit.setText(boar2)
+        self.due_date_dateEdit.setDate(due_date)
+        self.actual_farrowing_dateEdit.setDate(actual_farrow)
+        self.boarn_alive_edit.setText(born_alive)
+        
+        
+        self.still_birth_edit.setText(still_birth1)
+        self.mummified_edit.setText(mummified)
+        self.total_piglets_edit.setText(total_piglets)
+        self.date_weaning_dateEdit.setDate(date_wean)
+        self.total_wean_piglets_edit.setText(total_wean_piglets)
+        self.id_edit.setText(id_edit)
+        # # # self.cell_click_disabledTextbox()
+
+        # if self.sow_no_edit.text() != 0:
+        #     self.edit_button.setEnabled(True)
+        #     self.view_records_button.setEnabled(True)
+        # else:
+        #     return
+
     def setupUi(self, MainForm):
         MainForm.setObjectName("MainForm")
         MainForm.resize(1431, 636)
@@ -152,7 +221,7 @@ class Ui_MainForm(object):
         self.tableWidget.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,\
          stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(14)
+        self.tableWidget.setColumnCount(15)
         self.tableWidget.setRowCount(0)
         
         item = QtWidgets.QTableWidgetItem()
@@ -183,9 +252,12 @@ class Ui_MainForm(object):
         self.tableWidget.setHorizontalHeaderItem(12, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(13, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(14, item)
+        
         self.loadData()
-        #self.search()
         self.tableWidget.verticalHeader().setVisible(False)
+        self.tableWidget.cellClicked.connect(self.cell_click)
 
 
         ### FRAME ###
@@ -401,6 +473,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.date_of_breed1_dateEdit.setFont(font)
         self.date_of_breed1_dateEdit.setObjectName("date_of_breed1_dateEdit")
+        self.date_of_breed1_dateEdit.setDate(datetime.datetime.now().date())
 
         
         self.boar_no1_edit = QtWidgets.QLineEdit(self.breeding_frame)
@@ -418,6 +491,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.date_of_breed2_dateEdit.setFont(font)
         self.date_of_breed2_dateEdit.setObjectName("date_of_breed2_dateEdit")
+        self.date_of_breed2_dateEdit.setDate(datetime.datetime.now().date())
         
         self.boar_no2_edit = QtWidgets.QLineEdit(self.breeding_frame)
         self.boar_no2_edit.setGeometry(QtCore.QRect(200, 170, 113, 21))
@@ -433,7 +507,8 @@ class Ui_MainForm(object):
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
         self.due_date_dateEdit.setFont(font)
-        self.due_date_dateEdit.setObjectName("due_date_dateEdit")   
+        self.due_date_dateEdit.setObjectName("due_date_dateEdit")
+        self.due_date_dateEdit.setDate(datetime.datetime.now().date())   
         
         self.boarn_alive_edit = QtWidgets.QLineEdit(self.farrowing_frame)
         self.boarn_alive_edit.setGeometry(QtCore.QRect(220, 90, 113, 21))
@@ -451,6 +526,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.actual_farrowing_dateEdit.setFont(font)
         self.actual_farrowing_dateEdit.setObjectName("actual_farrowing_dateEdit")
+        self.actual_farrowing_dateEdit.setDate(datetime.datetime.now().date())
         
         self.still_birth_edit = QtWidgets.QLineEdit(self.farrowing_frame)
         self.still_birth_edit.setGeometry(QtCore.QRect(220, 120, 113, 21))
@@ -475,6 +551,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.total_piglets_edit.setFont(font)
         self.total_piglets_edit.setObjectName("total_piglets_edit")
+
         
         self.total_wean_piglets_edit = QtWidgets.QLineEdit(self.weaning_frame)
         self.total_wean_piglets_edit.setGeometry(QtCore.QRect(230, 90, 113, 21))
@@ -491,6 +568,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.date_weaning_dateEdit.setFont(font)
         self.date_weaning_dateEdit.setObjectName("date_weaning_dateEdit")
+        self.date_weaning_dateEdit.setDate(datetime.datetime.now().date())
         
         self.average_weight_edit = QtWidgets.QLineEdit(self.weaning_frame)
         self.average_weight_edit.setGeometry(QtCore.QRect(230, 120, 113, 21))
@@ -519,6 +597,7 @@ class Ui_MainForm(object):
         self.save_button.setFont(font)
         self.save_button.setObjectName("save_button")
         self.save_button.clicked.connect(self.insert_data)
+        self.save_button.clicked.connect(self.search)
         
         self.exit_button = QtWidgets.QPushButton(self.centralwidget)
         self.exit_button.setGeometry(QtCore.QRect(920, 520, 171, 31))
@@ -563,6 +642,11 @@ class Ui_MainForm(object):
         self.id_edit.setGeometry(QtCore.QRect(20, 559, 71, 31))
         self.id_edit.setObjectName("id_edit")
 
+        self.index_edit = QtWidgets.QLineEdit(self.centralwidget)
+        self.index_edit.setGeometry(QtCore.QRect(100, 559, 71, 31))
+        self.index_edit.setObjectName("index_edit")
+
+
         self.total_piglets_label.raise_()
         self.farrowing_label.raise_()
         self.actual_farrowing_label.raise_()
@@ -587,6 +671,7 @@ class Ui_MainForm(object):
         self.edit_button.raise_()
         self.clear_button.raise_()
         self.id_edit.raise_()
+        self.index_edit.raise_()
         
         MainForm.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainForm)
@@ -601,32 +686,34 @@ class Ui_MainForm(object):
         MainForm.setWindowTitle(_translate("MainForm", "Sow Performance Record"))
         
         item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("MainForm", "Parity No."))
+        item.setText(_translate("MainForm", "Index No."))
         item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("MainForm", "Date of Breed 1"))
+        item.setText(_translate("MainForm", "Parity No."))
         item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("MainForm", "Boar No."))
+        item.setText(_translate("MainForm", "Date of Breed 1"))
         item = self.tableWidget.horizontalHeaderItem(3)
-        item.setText(_translate("MainForm", "Date of Breed 2"))
-        item = self.tableWidget.horizontalHeaderItem(4)
         item.setText(_translate("MainForm", "Boar No."))
+        item = self.tableWidget.horizontalHeaderItem(4)
+        item.setText(_translate("MainForm", "Date of Breed 2"))
         item = self.tableWidget.horizontalHeaderItem(5)
-        item.setText(_translate("MainForm", "Due Date"))
+        item.setText(_translate("MainForm", "Boar No."))
         item = self.tableWidget.horizontalHeaderItem(6)
-        item.setText(_translate("MainForm", "Actual Farrowing"))
+        item.setText(_translate("MainForm", "Due Date"))
         item = self.tableWidget.horizontalHeaderItem(7)
-        item.setText(_translate("MainForm", "Born Alive"))
+        item.setText(_translate("MainForm", "Actual Farrowing"))
         item = self.tableWidget.horizontalHeaderItem(8)
-        item.setText(_translate("MainForm", "Still Birth"))
+        item.setText(_translate("MainForm", "Born Alive"))
         item = self.tableWidget.horizontalHeaderItem(9)
-        item.setText(_translate("MainForm", "Mummified"))
+        item.setText(_translate("MainForm", "Still Birth"))
         item = self.tableWidget.horizontalHeaderItem(10)
-        item.setText(_translate("MainForm", "Total Piglets"))
+        item.setText(_translate("MainForm", "Mummified"))
         item = self.tableWidget.horizontalHeaderItem(11)
-        item.setText(_translate("MainForm", "Date Wean"))
+        item.setText(_translate("MainForm", "Total Piglets"))
         item = self.tableWidget.horizontalHeaderItem(12)
-        item.setText(_translate("MainForm", "Total Wean Piglets"))
+        item.setText(_translate("MainForm", "Date Wean"))
         item = self.tableWidget.horizontalHeaderItem(13)
+        item.setText(_translate("MainForm", "Total Wean Piglets"))
+        item = self.tableWidget.horizontalHeaderItem(14)
         item.setText(_translate("MainForm", "Sow No."))
        
 
