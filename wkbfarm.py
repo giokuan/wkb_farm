@@ -193,6 +193,52 @@ class Ui_MainWindow(object):
                 self.conn.commit()
                 self.loadData()
 
+    def delete_record(self):
+        sow_id=self.sow_no_edit.text()
+
+        # if len(sow_id) == 0:
+        #     self.messageBox("Information", "No Record Found")
+        #     return 
+
+        self.conn=pymysql.connect(host="localhost", user="root", password="noahkuan03", db="pigfarm")
+        cur=self.conn.cursor()
+        sql = "DELETE FROM pig_record WHERE sow_no = '"+sow_id+"' "
+        sql2 = "DELETE FROM sow_performance WHERE sow_no = '"+sow_id+"' "
+        
+        
+        msg=QMessageBox() 
+        msg.setWindowIcon(QtGui.QIcon('photo/barmm.ico'))
+        msg.setStyleSheet('QMessageBox {background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0),\
+            stop:1 rgba(255, 255, 255, 255)); color: white;}\
+            QPushButton{color: white; font-size: 16px; background-color: rgb(75,75,75); \
+            border-radius: 10px; padding: 10px; text-align: center;} QPushButton:hover{color: rgb(0, 170, 127);}')
+        msg.setWindowTitle("Delete")
+        msg.setText("Are you sure you want to delete this record?")
+        msg.setIcon(QMessageBox.Question)
+        msg.setStandardButtons(QMessageBox.Ok| QMessageBox.Cancel)
+        msg.setDefaultButton(QMessageBox.Ok)
+        
+
+        res = msg.exec_()
+        if res == QMessageBox.Ok:
+            
+            text, okPressed = QtWidgets.QInputDialog.getText(None,"Password", "Enter Password:", QtWidgets.QLineEdit.Password, "")  
+
+            if okPressed and text == 'wkbfarm':
+                self.messageBox("Delete", " Resident Data Record Deleted")
+                cur.execute(sql)
+                cur.execute(sql2)
+                self.conn.commit() 
+                self.loadData()
+                self.refresh()
+
+            else:
+                self.messageBox("Information", "Password Incorrect")
+                return
+            
+        if res == QMessageBox.Cancel:
+            pass 
+
 
     def add_sow(self):
         # self.update_button.show()
@@ -221,6 +267,8 @@ class Ui_MainWindow(object):
 
         self.cancel_button.setStyleSheet("background-color: rgb(121,126, 129);")
         self.save_button.setStyleSheet("background-color: rgb(121,126, 129);")
+        self.edit_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
 
 
     def edit(self):
@@ -281,6 +329,7 @@ class Ui_MainWindow(object):
         self.save_button.setEnabled(False)
         self.cancel_button.setEnabled(False)
         self.view_records_button.setEnabled(False)
+        self.delete_button.setEnabled(False)
         self.loadData()
 
         self.edit_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
@@ -290,6 +339,8 @@ class Ui_MainWindow(object):
         self.cancel_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.delete_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
 
 
@@ -380,6 +431,7 @@ class Ui_MainWindow(object):
 
         if self.sow_no_edit.text() != 0:
             self.edit_button.setEnabled(True)
+            self.delete_button.setEnabled(True)
             self.view_records_button.setEnabled(True)
         else:
             return
@@ -389,7 +441,7 @@ class Ui_MainWindow(object):
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.save_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
              x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
-
+        self.delete_button.setStyleSheet("background-color: rgb(121,126, 129);")
 
        
    
@@ -407,7 +459,7 @@ class Ui_MainWindow(object):
         
         ### TEXTBOX ###
         self.sow_no_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.sow_no_edit.setGeometry(QtCore.QRect(150, 530, 113, 21))
+        self.sow_no_edit.setGeometry(QtCore.QRect(170, 530, 113, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -416,7 +468,7 @@ class Ui_MainWindow(object):
         self.sow_no_edit.setEnabled(False)
         
         self.ear_tag_number_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.ear_tag_number_edit.setGeometry(QtCore.QRect(150, 560, 113, 21))
+        self.ear_tag_number_edit.setGeometry(QtCore.QRect(170, 560, 113, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -425,7 +477,7 @@ class Ui_MainWindow(object):
         self.ear_tag_number_edit.setEnabled(False)
 
         self.ear_notch_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.ear_notch_edit.setGeometry(QtCore.QRect(150, 590, 113, 21))
+        self.ear_notch_edit.setGeometry(QtCore.QRect(170, 590, 113, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -434,7 +486,7 @@ class Ui_MainWindow(object):
         self.ear_notch_edit.setEnabled(False)
 
         self.sex_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.sex_edit.setGeometry(QtCore.QRect(370, 530, 191, 21))
+        self.sex_edit.setGeometry(QtCore.QRect(375, 530, 191, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -443,7 +495,7 @@ class Ui_MainWindow(object):
         self.sex_edit.setEnabled(False)
 
         self.breed_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.breed_edit.setGeometry(QtCore.QRect(370, 560, 191, 21))
+        self.breed_edit.setGeometry(QtCore.QRect(375, 560, 191, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -452,7 +504,7 @@ class Ui_MainWindow(object):
         self.breed_edit.setEnabled(False)
 
         self.date_of_birth_edit = QtWidgets.QDateEdit(self.centralwidget)
-        self.date_of_birth_edit.setGeometry(QtCore.QRect(440, 590, 121, 21))
+        self.date_of_birth_edit.setGeometry(QtCore.QRect(445, 590, 121, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -491,7 +543,7 @@ class Ui_MainWindow(object):
         
         ## LABEL ###
         self.sow_number_label = QtWidgets.QLabel(self.centralwidget)
-        self.sow_number_label.setGeometry(QtCore.QRect(30, 530, 81, 21))
+        self.sow_number_label.setGeometry(QtCore.QRect(30, 530, 130, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -515,7 +567,7 @@ class Ui_MainWindow(object):
         self.ear_notch_label.setObjectName("ear_notch_label")
 
         self.sex_label = QtWidgets.QLabel(self.centralwidget)
-        self.sex_label.setGeometry(QtCore.QRect(290, 530, 61, 21))
+        self.sex_label.setGeometry(QtCore.QRect(295, 530, 61, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -523,7 +575,7 @@ class Ui_MainWindow(object):
         self.sex_label.setObjectName("sex_label")
 
         self.breed_label = QtWidgets.QLabel(self.centralwidget)
-        self.breed_label.setGeometry(QtCore.QRect(290, 560, 71, 21))
+        self.breed_label.setGeometry(QtCore.QRect(295, 560, 71, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -531,7 +583,7 @@ class Ui_MainWindow(object):
         self.breed_label.setObjectName("breed_label")
         
         self.date_of_birth_label = QtWidgets.QLabel(self.centralwidget)
-        self.date_of_birth_label.setGeometry(QtCore.QRect(290, 590, 161, 21))
+        self.date_of_birth_label.setGeometry(QtCore.QRect(295, 590, 161, 21))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(12)
@@ -672,7 +724,7 @@ class Ui_MainWindow(object):
         self.view_records_button.setEnabled(False)
 
         self.exit_button = QtWidgets.QPushButton(self.centralwidget)
-        self.exit_button.setGeometry(QtCore.QRect(390, 710, 171, 41))
+        self.exit_button.setGeometry(QtCore.QRect(570, 710, 171, 41))
         font = QtGui.QFont()
         font.setFamily("Gunship Condensed")
         font.setPointSize(10)
@@ -680,6 +732,18 @@ class Ui_MainWindow(object):
         self.exit_button.setStyleSheet("background-color: rgb(121,126, 129);")
         self.exit_button.setObjectName("exit_button")
         self.exit_button.clicked.connect(self.exit_app)
+
+        self.delete_button = QtWidgets.QPushButton(self.centralwidget)
+        self.delete_button.setGeometry(QtCore.QRect(390, 710, 171, 41))
+        font = QtGui.QFont()
+        font.setFamily("Gunship Condensed")
+        font.setPointSize(10)
+        self.delete_button.setFont(font)
+        self.delete_button.setStyleSheet("background-color: qlineargradient(spread:pad,\
+             x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+        self.delete_button.setObjectName("delete_button")
+        self.delete_button.setEnabled(False)
+        self.delete_button.clicked.connect(self.delete_record)
         
         
         ### TABLE ###
@@ -825,6 +889,7 @@ class Ui_MainWindow(object):
         self.refresh_button.raise_()
         self.view_records_button.raise_()
         self.exit_button.raise_()
+        self.delete_button.raise_()
         self.label_logo.raise_()
         
 
@@ -839,7 +904,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "WKB Piggery Farm"))
-        self.sow_number_label.setText(_translate("MainWindow", "Sow No."))
+        self.sow_number_label.setText(_translate("MainWindow", "Sow/Boar No."))
         self.ear_tag_number_label.setText(_translate("MainWindow", "Ear Tag No."))
         self.ear_notch_label.setText(_translate("MainWindow", "Ear Notch:"))
         self.date_of_birth_label.setText(_translate("MainWindow", "Date of Birth:"))
@@ -855,6 +920,8 @@ class Ui_MainWindow(object):
         self.edit_button.setText(_translate("MainWindow", "Edit"))
         self.cancel_button.setText(_translate("MainWindow", "Cancel"))
         self.refresh_button.setText(_translate("MainWindow", "Refresh"))
+        self.exit_button.setText(_translate("MainWindow", "Exit"))
+        self.delete_button.setText(_translate("MainWindow", "Delete"))
         self.view_records_button.setText(_translate("MainWindow", "View Records"))
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Sow No."))
@@ -874,7 +941,6 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Dam"))
         item = self.tableWidget.horizontalHeaderItem(8)
         item.setText(_translate("MainWindow", "Origin"))
-        self.exit_button.setText(_translate("MainWindow", "Exit"))
 
 
 if __name__ == "__main__":
