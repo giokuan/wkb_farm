@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QFileDialog
 import sys
 import datetime
+from wkbfarm import Ui_MainWindow
 
 
 
@@ -24,7 +25,19 @@ class Ui_MainForm(object):
         mess.setText(message)
         mess.setIcon(QMessageBox.Information)
         mess.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        mess.exec_() 
+        mess.exec_()
+
+
+    # def exit_app(self):
+        
+        
+    #     self.window =QtWidgets.QMainWindow()
+    #     self.ui = Ui_MainWindow()
+    #     self.ui.setupUi(self.window)
+    #     #self.MainWindow.close()
+
+    #     # self.next()
+    #     self.window.show()
 
     def search(self): 
         """ return a person name or a chapter"""   
@@ -104,7 +117,7 @@ class Ui_MainForm(object):
         data= cur.execute(query, (int(parity_no), str(dob1), boar1.upper(), str(dob2), boar2.upper(),\
                 str(due_date), str(actual_farrow), born_alive, still_birth, mummified,\
                 total_piglets, str(date_wean), total_wean_piglets, sow_id ))
-        print(data)
+        #print(data)
 
         if (data):
             # msg=QMessageBox()
@@ -124,6 +137,78 @@ class Ui_MainForm(object):
                 #self.addbuttom.setEnabled(True)
                 # self.cancel()
                 self.loadData()
+
+
+    def update(self):
+        """ Update information and save information to the database"""
+        
+        
+        
+        index=self.index_edit.text()
+        parity = self.parity_edit.text()
+        
+        dateofbreed1 = self.date_of_breed1_dateEdit.date()
+        dob1 = dateofbreed1.toPyDate()
+        
+        boar1=self.boar_no1_edit.text()
+        dateofbreed2 = self.date_of_breed2_dateEdit.date()
+        dob2 = dateofbreed2.toPyDate()
+        
+        boar2 = self.boar_no2_edit.text()
+        
+        due = self.due_date_dateEdit.date()
+        due_date = due.toPyDate()
+        
+        af =self.actual_farrowing_dateEdit.date()
+        actual_farrow = af.toPyDate()
+
+        born_alive=self.boarn_alive_edit.text()
+        still_birth = self.still_birth_edit.text()
+        mummified=self.mummified_edit.text()
+        total_piglets=self.total_piglets_edit.text()
+        
+        dow = self.date_weaning_dateEdit.date()
+        date_of_wean = dow.toPyDate()
+        total_wean = self.total_wean_piglets_edit.text()
+
+        total_piglets = self.total_piglets_edit.text()
+        sow_id=self.id_edit.text()
+
+        
+        
+        self.conn=pymysql.connect(host="localhost", user="root", password="noahkuan03", db="pigfarm")
+        cur=self.conn.cursor()
+
+        sql = "UPDATE sow_performance SET  parity_no= %s, dob1 = %s, boar_no1= %s,\
+                 dob2 = %s, boar_no2 = %s, due_date = %s, actual_farrowing = %s, \
+                 born_alive = %s, still_birth = %s, mummified = %s, total_piglets = %s, \
+                 date_wean = %s, total_wean = %s, sow_no = %s  WHERE index_id =%s "
+
+        val =( int(parity), dob1, boar1.upper(), dob2, boar2.upper(), due_date, actual_farrow,\
+                born_alive, still_birth, mummified, total_piglets, date_of_wean, total_wean, sow_id, index)
+        
+        
+        cur.execute(sql, val)
+        self.messageBox("WKB Piggery", " Sow Data Updated")
+        self.conn.commit()
+        self.loadData()
+        self.update_button.hide()
+        self.edit_button.show()
+
+        self.parity_edit.setEnabled(False)
+        self.date_of_breed1_dateEdit.setEnabled(False)
+        self.boar_no1_edit.setEnabled(False)
+        self.date_of_breed2_dateEdit.setEnabled(False)
+        self.boar_no2_edit.setEnabled(False)
+        self.due_date_dateEdit.setEnabled(False)
+        self.actual_farrowing_dateEdit.setEnabled(False)
+        self.boarn_alive_edit.setEnabled(False)
+        self.still_birth_edit.setEnabled(False)
+        self.mummified_edit.setEnabled(False)
+        self.total_piglets_edit.setEnabled(False)
+        self.date_weaning_dateEdit.setEnabled(False)
+        self.total_wean_piglets_edit.setEnabled(False)
+
 
     def loadData(self):
         """ load data in the table"""
@@ -151,6 +236,22 @@ class Ui_MainForm(object):
                   
         except mc.Error as e:
             print ("Error Occured")
+
+    def cell_click_disabledTextbox(self):
+        self.parity_edit.setEnabled(False)
+        self.date_of_breed1_dateEdit.setEnabled(False)
+        self.boar_no1_edit.setEnabled(False)
+        self.date_of_breed2_dateEdit.setEnabled(False)
+        self.boar_no2_edit.setEnabled(False)
+        self.due_date_dateEdit.setEnabled(False)
+        self.actual_farrowing_dateEdit.setEnabled(False)
+        self.boarn_alive_edit.setEnabled(False)
+        self.still_birth_edit.setEnabled(False)
+        self.mummified_edit.setEnabled(False)
+        self.total_piglets_edit.setEnabled(False)
+        self.date_weaning_dateEdit.setEnabled(False)
+        self.total_wean_piglets_edit.setEnabled(False)
+        self.save_button.setEnabled(False)
 
 
     def cell_click(self,columnCount,rowCount):
@@ -202,13 +303,98 @@ class Ui_MainForm(object):
         self.date_weaning_dateEdit.setDate(date_wean)
         self.total_wean_piglets_edit.setText(total_wean_piglets)
         self.id_edit.setText(id_edit)
-        # # # self.cell_click_disabledTextbox()
+        self.cell_click_disabledTextbox()
 
-        # if self.sow_no_edit.text() != 0:
-        #     self.edit_button.setEnabled(True)
-        #     self.view_records_button.setEnabled(True)
-        # else:
-        #     return
+        if self.parity_edit.text() != 0:
+            self.edit_button.setEnabled(True)
+            #self.update_button.hide()
+        else:
+            return
+
+    def edit(self):
+        #self.parity_edit.setEnabled(True)
+        self.date_of_breed1_dateEdit.setEnabled(True)
+        self.boar_no1_edit.setEnabled(True)
+        self.date_of_breed2_dateEdit.setEnabled(True)
+        self.boar_no2_edit.setEnabled(True)
+        self.due_date_dateEdit.setEnabled(True)
+        self.actual_farrowing_dateEdit.setEnabled(True)
+        self.boarn_alive_edit.setEnabled(True)
+        self.still_birth_edit.setEnabled(True)
+        self.mummified_edit.setEnabled(True)
+        self.total_piglets_edit.setEnabled(True)
+        self.total_wean_piglets_edit.setEnabled(True)
+        self.date_weaning_dateEdit.setEnabled(True)
+        #self.save_button.setEnabled(False)
+        self.update_button.show()
+        self.edit_button.hide()
+
+
+    def cancel(self):
+        self.parity_edit.setEnabled(False)
+        self.date_of_breed1_dateEdit.setEnabled(False)
+        self.boar_no1_edit.setEnabled(False)
+        self.date_of_breed2_dateEdit.setEnabled(False)
+        self.boar_no2_edit.setEnabled(False)
+        self.due_date_dateEdit.setEnabled(False)
+        self.actual_farrowing_dateEdit.setEnabled(False)
+        self.boarn_alive_edit.setEnabled(False)
+        self.still_birth_edit.setEnabled(False)
+        self.mummified_edit.setEnabled(False)
+        self.total_piglets_edit.setEnabled(False)
+        self.date_weaning_dateEdit.setEnabled(False)
+        self.total_wean_piglets_edit.setEnabled(False)
+        
+        self.save_button.setEnabled(False)
+        self.update_button.hide()
+        self.edit_button.show()
+        self.edit_button.setEnabled(False)
+
+        self.parity_edit.clear()
+        self.boar_no1_edit.clear()
+        self.boar_no2_edit.clear()
+        self.boarn_alive_edit.clear()
+        self.still_birth_edit.clear()
+        self.mummified_edit.clear()
+        self.total_piglets_edit.clear()
+        self.total_wean_piglets_edit.clear()
+        self.date_of_breed1_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_of_breed2_dateEdit.setDate(datetime.datetime.now().date())
+        self.due_date_dateEdit.setDate(datetime.datetime.now().date())
+        self.actual_farrowing_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_weaning_dateEdit.setDate(datetime.datetime.now().date())
+
+    def add(self):
+        self.parity_edit.setEnabled(True)
+        self.date_of_breed1_dateEdit.setEnabled(True)
+        self.boar_no1_edit.setEnabled(True)
+        self.date_of_breed2_dateEdit.setEnabled(True)
+        self.boar_no2_edit.setEnabled(True)
+        self.due_date_dateEdit.setEnabled(True)
+        self.actual_farrowing_dateEdit.setEnabled(True)
+        self.boarn_alive_edit.setEnabled(True)
+        self.still_birth_edit.setEnabled(True)
+        self.mummified_edit.setEnabled(True)
+        self.total_piglets_edit.setEnabled(True)
+        self.total_wean_piglets_edit.setEnabled(True)
+        self.date_weaning_dateEdit.setEnabled(True)
+        self.save_button.setEnabled(True)
+
+        self.parity_edit.clear()
+        self.boar_no1_edit.clear()
+        self.boar_no2_edit.clear()
+        self.boarn_alive_edit.clear()
+        self.still_birth_edit.clear()
+        self.mummified_edit.clear()
+        self.total_piglets_edit.clear()
+        self.total_wean_piglets_edit.clear()
+        self.date_of_breed1_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_of_breed2_dateEdit.setDate(datetime.datetime.now().date())
+        self.due_date_dateEdit.setDate(datetime.datetime.now().date())
+        self.actual_farrowing_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_weaning_dateEdit.setDate(datetime.datetime.now().date())
+
+
 
     def setupUi(self, MainForm):
         MainForm.setObjectName("MainForm")
@@ -264,7 +450,7 @@ class Ui_MainForm(object):
         self.breeding_frame = QtWidgets.QFrame(self.centralwidget)
         self.breeding_frame.setGeometry(QtCore.QRect(10, 260, 351, 251))
         self.breeding_frame.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,\
-         stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+            stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.breeding_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.breeding_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.breeding_frame.setObjectName("breeding_frame")
@@ -272,7 +458,7 @@ class Ui_MainForm(object):
         self.farrowing_frame = QtWidgets.QFrame(self.centralwidget)
         self.farrowing_frame.setGeometry(QtCore.QRect(370, 260, 351, 251))
         self.farrowing_frame.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,\
-         stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+            stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.farrowing_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.farrowing_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.farrowing_frame.setObjectName("farrowing_frame")
@@ -280,7 +466,7 @@ class Ui_MainForm(object):
         self.weaning_frame = QtWidgets.QFrame(self.centralwidget)
         self.weaning_frame.setGeometry(QtCore.QRect(730, 260, 361, 251))
         self.weaning_frame.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,\
-         stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
+            stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));")
         self.weaning_frame.setFrameShape(QtWidgets.QFrame.Box)
         self.weaning_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.weaning_frame.setObjectName("weaning_frame")
@@ -465,6 +651,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.parity_edit.setFont(font)
         self.parity_edit.setObjectName("parity_edit")
+        self.parity_edit.setEnabled(False)
         
         self.date_of_breed1_dateEdit = QtWidgets.QDateEdit(self.breeding_frame)
         self.date_of_breed1_dateEdit.setGeometry(QtCore.QRect(200, 80, 111, 22))
@@ -474,6 +661,7 @@ class Ui_MainForm(object):
         self.date_of_breed1_dateEdit.setFont(font)
         self.date_of_breed1_dateEdit.setObjectName("date_of_breed1_dateEdit")
         self.date_of_breed1_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_of_breed1_dateEdit.setEnabled(False)
 
         
         self.boar_no1_edit = QtWidgets.QLineEdit(self.breeding_frame)
@@ -483,6 +671,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.boar_no1_edit.setFont(font)
         self.boar_no1_edit.setObjectName("boar_no1_edit")
+        self.boar_no1_edit.setEnabled(False)
         
         self.date_of_breed2_dateEdit = QtWidgets.QDateEdit(self.breeding_frame)
         self.date_of_breed2_dateEdit.setGeometry(QtCore.QRect(200, 140, 111, 22))
@@ -492,6 +681,7 @@ class Ui_MainForm(object):
         self.date_of_breed2_dateEdit.setFont(font)
         self.date_of_breed2_dateEdit.setObjectName("date_of_breed2_dateEdit")
         self.date_of_breed2_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_of_breed2_dateEdit.setEnabled(False)
         
         self.boar_no2_edit = QtWidgets.QLineEdit(self.breeding_frame)
         self.boar_no2_edit.setGeometry(QtCore.QRect(200, 170, 113, 21))
@@ -500,6 +690,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.boar_no2_edit.setFont(font)
         self.boar_no2_edit.setObjectName("boar_no2_edit")
+        self.boar_no2_edit.setEnabled(False)
         
         self.due_date_dateEdit = QtWidgets.QDateEdit(self.breeding_frame)
         self.due_date_dateEdit.setGeometry(QtCore.QRect(200, 200, 110, 22))
@@ -508,7 +699,8 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.due_date_dateEdit.setFont(font)
         self.due_date_dateEdit.setObjectName("due_date_dateEdit")
-        self.due_date_dateEdit.setDate(datetime.datetime.now().date())   
+        self.due_date_dateEdit.setDate(datetime.datetime.now().date())
+        self.due_date_dateEdit.setEnabled(False)   
         
         self.boarn_alive_edit = QtWidgets.QLineEdit(self.farrowing_frame)
         self.boarn_alive_edit.setGeometry(QtCore.QRect(220, 90, 113, 21))
@@ -518,6 +710,7 @@ class Ui_MainForm(object):
         self.boarn_alive_edit.setFont(font)
         self.boarn_alive_edit.setStyleSheet("")
         self.boarn_alive_edit.setObjectName("boarn_alive_edit")
+        self.boarn_alive_edit.setEnabled(False)
         
         self.actual_farrowing_dateEdit = QtWidgets.QDateEdit(self.farrowing_frame)
         self.actual_farrowing_dateEdit.setGeometry(QtCore.QRect(220, 60, 111, 22))
@@ -527,6 +720,7 @@ class Ui_MainForm(object):
         self.actual_farrowing_dateEdit.setFont(font)
         self.actual_farrowing_dateEdit.setObjectName("actual_farrowing_dateEdit")
         self.actual_farrowing_dateEdit.setDate(datetime.datetime.now().date())
+        self.actual_farrowing_dateEdit.setEnabled(False)
         
         self.still_birth_edit = QtWidgets.QLineEdit(self.farrowing_frame)
         self.still_birth_edit.setGeometry(QtCore.QRect(220, 120, 113, 21))
@@ -535,6 +729,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.still_birth_edit.setFont(font)
         self.still_birth_edit.setObjectName("still_birth_edit")
+        self.still_birth_edit.setEnabled(False)
         
         self.mummified_edit = QtWidgets.QLineEdit(self.farrowing_frame)
         self.mummified_edit.setGeometry(QtCore.QRect(220, 150, 113, 21))
@@ -543,6 +738,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.mummified_edit.setFont(font)
         self.mummified_edit.setObjectName("mummified_edit")
+        self.mummified_edit.setEnabled(False)
         
         self.total_piglets_edit = QtWidgets.QLineEdit(self.farrowing_frame)
         self.total_piglets_edit.setGeometry(QtCore.QRect(220, 180, 113, 21))
@@ -551,6 +747,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.total_piglets_edit.setFont(font)
         self.total_piglets_edit.setObjectName("total_piglets_edit")
+        self.total_piglets_edit.setEnabled(False)
 
         
         self.total_wean_piglets_edit = QtWidgets.QLineEdit(self.weaning_frame)
@@ -560,6 +757,7 @@ class Ui_MainForm(object):
         font.setPointSize(12)
         self.total_wean_piglets_edit.setFont(font)
         self.total_wean_piglets_edit.setObjectName("total_wean_piglets_edit")
+        self.total_wean_piglets_edit.setEnabled(False)
         
         self.date_weaning_dateEdit = QtWidgets.QDateEdit(self.weaning_frame)
         self.date_weaning_dateEdit.setGeometry(QtCore.QRect(230, 60, 111, 22))
@@ -569,6 +767,7 @@ class Ui_MainForm(object):
         self.date_weaning_dateEdit.setFont(font)
         self.date_weaning_dateEdit.setObjectName("date_weaning_dateEdit")
         self.date_weaning_dateEdit.setDate(datetime.datetime.now().date())
+        self.date_weaning_dateEdit.setEnabled(False)
         
         self.average_weight_edit = QtWidgets.QLineEdit(self.weaning_frame)
         self.average_weight_edit.setGeometry(QtCore.QRect(230, 120, 113, 21))
@@ -587,6 +786,7 @@ class Ui_MainForm(object):
         font.setPointSize(10)
         self.add_record_button.setFont(font)
         self.add_record_button.setObjectName("add_record_button")
+        self.add_record_button.clicked.connect(self.add)
     
 
         self.save_button = QtWidgets.QPushButton(self.centralwidget)
@@ -598,6 +798,7 @@ class Ui_MainForm(object):
         self.save_button.setObjectName("save_button")
         self.save_button.clicked.connect(self.insert_data)
         self.save_button.clicked.connect(self.search)
+        self.save_button.setEnabled(False)
         
         self.exit_button = QtWidgets.QPushButton(self.centralwidget)
         self.exit_button.setGeometry(QtCore.QRect(920, 520, 171, 31))
@@ -606,6 +807,8 @@ class Ui_MainForm(object):
         font.setPointSize(10)
         self.exit_button.setFont(font)
         self.exit_button.setObjectName("exit_button")
+        #self.exit_button.clicked.connect(self.exit_app)
+
         
         self.cancel_button = QtWidgets.QPushButton(self.centralwidget)
         self.cancel_button.setGeometry(QtCore.QRect(730, 520, 171, 31))
@@ -614,6 +817,7 @@ class Ui_MainForm(object):
         font.setPointSize(10)
         self.cancel_button.setFont(font)
         self.cancel_button.setObjectName("cancel_button")
+        self.cancel_button.clicked.connect(self.cancel)
         
         self.edit_button = QtWidgets.QPushButton(self.centralwidget)
         self.edit_button.setGeometry(QtCore.QRect(370, 520, 171, 31))
@@ -622,6 +826,20 @@ class Ui_MainForm(object):
         font.setPointSize(10)
         self.edit_button.setFont(font)
         self.edit_button.setObjectName("edit_button")
+        self.edit_button.setEnabled(False)
+        self.edit_button.clicked.connect(self.edit)
+
+        self.update_button = QtWidgets.QPushButton(self.centralwidget)
+        self.update_button.setGeometry(QtCore.QRect(370, 520, 171, 31))
+        font = QtGui.QFont()
+        font.setFamily("Gunship Condensed")
+        font.setPointSize(10)
+        self.update_button.setFont(font)
+        self.update_button.setObjectName("update_button")
+        #self.update_button.setEnabled(False)
+        self.update_button.hide()
+        self.update_button.clicked.connect(self.update)
+        self.update_button.clicked.connect(self.search)
         
         self.clear_button = QtWidgets.QPushButton(self.centralwidget)
         self.clear_button.setGeometry(QtCore.QRect(550, 520, 171, 31))
@@ -641,10 +859,12 @@ class Ui_MainForm(object):
         self.id_edit = QtWidgets.QLineEdit(self.centralwidget)
         self.id_edit.setGeometry(QtCore.QRect(20, 559, 71, 31))
         self.id_edit.setObjectName("id_edit")
+        self.id_edit.setEnabled(False)
 
         self.index_edit = QtWidgets.QLineEdit(self.centralwidget)
         self.index_edit.setGeometry(QtCore.QRect(100, 559, 71, 31))
         self.index_edit.setObjectName("index_edit")
+        self.index_edit.setEnabled(False)
 
 
         self.total_piglets_label.raise_()
@@ -669,6 +889,7 @@ class Ui_MainForm(object):
         self.exit_button.raise_()
         self.cancel_button.raise_()
         self.edit_button.raise_()
+        self.update_button.raise_()
         self.clear_button.raise_()
         self.id_edit.raise_()
         self.index_edit.raise_()
@@ -739,6 +960,7 @@ class Ui_MainForm(object):
         self.exit_button.setText(_translate("MainForm", "EXIT"))
         self.cancel_button.setText(_translate("MainForm", "CANCEL"))
         self.edit_button.setText(_translate("MainForm", "EDIT"))
+        self.update_button.setText(_translate("MainForm", "UPDATE"))
         self.clear_button.setText(_translate("MainForm", "CLEAR"))
 
 
